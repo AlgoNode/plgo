@@ -218,7 +218,7 @@ func (f *VoidFunction) SQL(packageName string, w io.Writer) {
 	w.Write([]byte(")\n"))
 	w.Write([]byte("RETURNS VOID AS\n"))
 	w.Write([]byte("'$libdir/" + packageName + "', '" + f.Name + "'\n"))
-	w.Write([]byte("LANGUAGE c VOLATILE STRICT;\n"))
+	w.Write([]byte("LANGUAGE c IMMUTABLE STRICT;\n"))
 	if f.Doc == "" {
 		w.Write([]byte("\n"))
 		return
@@ -301,7 +301,7 @@ func (f *Function) SQL(packageName string, w io.Writer) {
 		w.Write([]byte("RETURNS " + datumTypes[f.ReturnType] + " AS\n"))
 	}
 	w.Write([]byte("'$libdir/" + packageName + "', '" + f.Name + "'\n"))
-	w.Write([]byte("LANGUAGE c VOLATILE STRICT;\n"))
+	w.Write([]byte("LANGUAGE c IMMUTABLE STRICT;\n"))
 	if f.Doc == "" {
 		w.Write([]byte("\n"))
 		return
@@ -349,7 +349,7 @@ func (f *TriggerFunction) SQL(packageName string, w io.Writer) {
 	w.Write([]byte(")\n"))
 	w.Write([]byte("RETURNS TRIGGER AS\n"))
 	w.Write([]byte("'$libdir/" + packageName + "', '" + f.Name + "'\n"))
-	w.Write([]byte("LANGUAGE c VOLATILE STRICT;\n"))
+	w.Write([]byte("LANGUAGE c IMMUTABLE STRICT;\n"))
 	if f.Doc == "" {
 		w.Write([]byte("\n"))
 		return

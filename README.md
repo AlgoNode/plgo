@@ -12,7 +12,7 @@ contribution of all kind welcome!
 
 ## installation
 
-`go get -u github.com/algonode/plgo/plgo`
+`go install github.com/algonode/plgo/plgo@latest`
 
 ## write functions
 

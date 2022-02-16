@@ -112,7 +112,11 @@ func readPlGoSource() ([]byte, error) {
 		goPath = build.Default.GOPATH // Go 1.8 and later have a default GOPATH
 	}
 	for _, goPathElement := range filepath.SplitList(goPath) {
-		rv, err := ioutil.ReadFile(filepath.Join(goPathElement, "src", "gitlab.com", "microo8", "plgo", "pl.go"))
+		matches, err := filepath.Glob(filepath.Join(goPathElement, "src", "github.com", "algonode", "plgo*", "pl.go"))
+		if err != nil || len(matches) == 0 {
+			continue
+		}
+		rv, err := ioutil.ReadFile(matches[0])
 		if err == nil {
 			return rv, nil
 		} else if os.IsNotExist(err) {
@@ -121,7 +125,7 @@ func readPlGoSource() ([]byte, error) {
 			return nil, fmt.Errorf("Cannot read plgo package: %w", err)
 		}
 	}
-	return nil, fmt.Errorf("Package github.com/algonode/plgo not installed\nplease install it with: go get -u github.com/algonode/plgo/plgo")
+	return nil, fmt.Errorf("Package github.com/algonode/plgo not installed\nplease install it with: go install github.com/algonode/plgo/plgo@latest")
 }
 
 func (mw *ModuleWriter) writeplgo(tempPackagePath string) error {

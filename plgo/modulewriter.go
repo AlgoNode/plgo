@@ -112,7 +112,7 @@ func readPlGoSource() ([]byte, error) {
 		goPath = build.Default.GOPATH // Go 1.8 and later have a default GOPATH
 	}
 	for _, goPathElement := range filepath.SplitList(goPath) {
-		matches, err := filepath.Glob(filepath.Join(goPathElement, "src", "github.com", "algonode", "plgo*", "pl.go"))
+		matches, err := filepath.Glob(filepath.Join(goPathElement, "pkg", "mod", "github.com", "algonode", "plgo*", "pl.go"))
 		if err != nil || len(matches) == 0 {
 			continue
 		}

@@ -1,7 +1,7 @@
 package plgo
 
 /*
-#cgo CFLAGS: -I"/usr/include/postgresql/server" -fpic
+#cgo CFLAGS: -I"/usr/include/postgresql/14/server" -fpic
 #cgo LDFLAGS: -shared
 //{windowsCFLAGS}
 

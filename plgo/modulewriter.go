@@ -13,6 +13,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"golang.org/x/mod/modfile"
 )
 
 //ToUnexported changes Exported function name to unexported
@@ -106,26 +108,70 @@ func (mw *ModuleWriter) writeUserPackage(tempPackagePath string) error {
 	return nil
 }
 
+func versionInfo(mod string) (string, error) {
+	gomod, err := ioutil.ReadFile("go.mod")
+	if os.IsNotExist(err) {
+		return "", fmt.Errorf("go.mod is missing. Please run go mod init")
+	} else if err != nil {
+		return "", err
+	}
+	moddata, err := modfile.Parse("go.mod", gomod, nil)
+	if err != nil {
+		return "", err
+	}
+	for _, req := range moddata.Require {
+		if req.Mod.Path == mod {
+			return req.Mod.Version, nil
+		}
+	}
+	return "", fmt.Errorf("Cannot find %s in go.mod", mod)
+}
+
 func readPlGoSource() ([]byte, error) {
+	var found string
 	goPath := os.Getenv("GOPATH")
 	if goPath == "" {
 		goPath = build.Default.GOPATH // Go 1.8 and later have a default GOPATH
 	}
 	for _, goPathElement := range filepath.SplitList(goPath) {
-		matches, err := filepath.Glob(filepath.Join(goPathElement, "pkg", "mod", "github.com", "algonode", "plgo*", "pl.go"))
-		if err != nil || len(matches) == 0 {
-			continue
+		path := filepath.Join(goPathElement, "src", "gitlab.com", "microo8", "plgo", "pl.go")
+		if _, err := os.Stat(path); err == nil {
+			found = path
+			break
 		}
-		rv, err := ioutil.ReadFile(matches[0])
+	}
+	if found == "" {
+		version, err := versionInfo("gitlab.com/microo8/plgo")
+		if err != nil {
+			return nil, err
+		}
+		pathEnd := filepath.Join("pkg", "mod", "gitlab.com", "microo8", "plgo@"+version, "pl.go")
+		cache, ok := os.LookupEnv("GOMODCACHE")
+		if ok {
+			path := filepath.Join(cache, pathEnd)
+			if _, err := os.Stat(path); err == nil {
+				found = path
+			}
+		}
+		if found == "" {
+			for _, goPathElement := range filepath.SplitList(goPath) {
+				path := filepath.Join(goPathElement, pathEnd)
+				if _, err := os.Stat(path); err == nil {
+					found = path
+					break
+				}
+			}
+		}
+	}
+	if found != "" {
+		rv, err := ioutil.ReadFile(found)
 		if err == nil {
 			return rv, nil
-		} else if os.IsNotExist(err) {
-			continue // try the next
 		} else {
 			return nil, fmt.Errorf("Cannot read plgo package: %w", err)
 		}
 	}
-	return nil, fmt.Errorf("Package github.com/algonode/plgo not installed\nplease install it with: go install github.com/algonode/plgo/plgo@latest")
+	return nil, fmt.Errorf("Package github.com/algonode/plgo not installed\nplease install it with: go get -u github.com/algonode/plgo/plgo")
 }
 
 func (mw *ModuleWriter) writeplgo(tempPackagePath string) error {

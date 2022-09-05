@@ -134,18 +134,18 @@ func readPlGoSource() ([]byte, error) {
 		goPath = build.Default.GOPATH // Go 1.8 and later have a default GOPATH
 	}
 	for _, goPathElement := range filepath.SplitList(goPath) {
-		path := filepath.Join(goPathElement, "src", "gitlab.com", "microo8", "plgo", "pl.go")
+		path := filepath.Join(goPathElement, "src", "github.com", "algonode", "plgo", "pl.go")
 		if _, err := os.Stat(path); err == nil {
 			found = path
 			break
 		}
 	}
 	if found == "" {
-		version, err := versionInfo("gitlab.com/microo8/plgo")
+		version, err := versionInfo("github.com/algonode/plgo")
 		if err != nil {
 			return nil, err
 		}
-		pathEnd := filepath.Join("pkg", "mod", "gitlab.com", "microo8", "plgo@"+version, "pl.go")
+		pathEnd := filepath.Join("pkg", "mod", "github.com", "algonode", "plgo@"+version, "pl.go")
 		cache, ok := os.LookupEnv("GOMODCACHE")
 		if ok {
 			path := filepath.Join(cache, pathEnd)

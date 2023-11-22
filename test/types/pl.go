@@ -69,7 +69,7 @@ Datum void_datum(){
 }
 
 Datum cstring_to_datum(char *val) {
-    return CStringGetDatum(cstring_to_text(val));
+    return CStringGetDatum(val);
 }
 
 Datum int16_to_datum(int16 val) {
@@ -146,7 +146,7 @@ Datum array_to_datum(Oid element_type, Datum* vals, int size) {
 
 //Datum to val //////////////////////////////////////////////////////////
 char* datum_to_cstring(Datum val) {
-    return DatumGetCString(text_to_cstring((struct varlena *)val));
+    return DatumGetCString(val);
 }
 
 int16 datum_to_int16(Datum val) {

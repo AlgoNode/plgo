@@ -571,7 +571,7 @@ func (db *DB) Prepare(query string, types []string) (*Stmt, error) {
 		typeIds := make([]C.Oid, len(types))
 		var typmod C.int32
 		for i, t := range types {
-			C.parseTypeString(C.CString(t), &typeIds[i], &typmod, C.false)
+			C.parseTypeString(C.CString(t), &typeIds[i], &typmod, nil)
 		}
 		typeIdsP = &typeIds[0]
 	}

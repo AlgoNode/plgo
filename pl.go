@@ -619,7 +619,7 @@ func (db *DB) Prepare(query string, types []string) (*Stmt, error) {
 		for i, t := range types {
 			ct := C.CString(t)
 			defer C.free(unsafe.Pointer(ct))
-			C.parseTypeString(ct, &typeIds[i], &typmod, (C._Bool)(false))
+			C.parseTypeString(ct, &typeIds[i], &typmod, nil)
 		}
 		typeIdsP = &typeIds[0]
 	}

@@ -1,7 +1,7 @@
 package plgo
 
 /*
-#cgo CFLAGS: -I"/usr/include/postgresql/14/server" -fpic
+#cgo CFLAGS: -I"/usr/include/postgresql/16/server" -fpic
 #cgo LDFLAGS: -shared
 //{windowsCFLAGS}
 
@@ -83,7 +83,7 @@ Datum bytes_to_datum(void *val, uint len) {
 }
 
 Datum cstring_to_datum(char *val) {
-    return CStringGetDatum(cstring_to_text(val));
+    return CStringGetDatum(val);
 }
 
 Datum int16_to_datum(int16 val) {
@@ -160,11 +160,11 @@ Datum jsonb_to_datum(char* val) {
 
 //Datum to val //////////////////////////////////////////////////////////
 char* datum_to_cstring(Datum val) {
-    return DatumGetCString(text_to_cstring((struct varlena *)val));
+    return DatumGetCString(val);
 }
 
 bytea* datum_to_byteap(Datum val) {
-    return DatumGetByteaPP((struct varlena *)val);
+    return DatumGetByteaPP(val);
 }
 
 unsigned char * bytea_to_chars(bytea* val) {
